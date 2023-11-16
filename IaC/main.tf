@@ -16,23 +16,24 @@ terraform {
 }
 
 provider "aws" {
-  region = "us-east-1"
+  region = var.region
 }
 
 resource "aws_instance" "web_instance_1" {
-  ami           = "ami-011899242bb902164" # Ubuntu 20.04 LTS // us-east-1
-  instance_type = "t2.micro"
+  ami           = var.ami # Ubuntu 20.04 LTS // us-east-1
+  instance_type = var.instance_type
   security_groups = [aws_security_group.instances.name]
   user_data = <<-EOF
     #!/bin/bash
     echo "My profile 1" > index.html
     python3 -m http.server 8080 &
     EOF
+  
 }
 
 resource "aws_instance" "web_instance_2" {
-  ami           = "ami-011899242bb902164" # Ubuntu 20.04 LTS // us-east-1
-  instance_type = "t2.micro"
+  ami           = var.ami # Ubuntu 20.04 LTS // us-east-1
+  instance_type = var.instance_type
   security_groups = [aws_security_group.instances.name]
   user_data = <<-EOF
     #!/bin/bash
@@ -42,25 +43,25 @@ resource "aws_instance" "web_instance_2" {
 }
 
 resource "aws_s3_bucket" "bucket" {
-  bucket_prefix = "profile-web-app-data"
+  bucket_prefix = var.bucket_prefix
   force_destroy = true
 }
 
 
-resource "aws_s3_bucket" "terraform_state" {
-  bucket = "postbnd-tf-state"
-  force_destroy = true
-}
+# resource "aws_s3_bucket" "terraform_state" {
+#   bucket = "postbnd-tf-state"
+#   force_destroy = true
+# }
 
 resource "aws_s3_bucket_versioning" "terraform_bucket_versioning" {
-  bucket = aws_s3_bucket.terraform_state.id
+  bucket = aws_s3_bucket.bucket.id
   versioning_configuration {
     status = "Enabled"
   }
 }
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "terraform_state_crypto_conf" {
-  bucket = aws_s3_bucket.terraform_state.bucket
+  bucket = aws_s3_bucket.bucket.bucket
   rule {
     apply_server_side_encryption_by_default {
       sse_algorithm = "AES256"
@@ -183,12 +184,12 @@ resource "aws_lb" "load_balancer" {
 }
 
 resource "aws_route53_zone" "primary" {
-  name = "postbndtest.saqle.com"
+  name = var.domain
 }
 
 resource "aws_route53_record" "root" {
   zone_id = aws_route53_zone.primary.zone_id
-  name = "postbndtest.saqle.com"
+  name = var.domain
   type = "A"
 
   alias {
@@ -200,14 +201,13 @@ resource "aws_route53_record" "root" {
 
 resource "aws_db_instance" "db_instance" {
   allocated_storage = 20
-  auto_minor_version_upgrade = true
   storage_type = "standard"
   engine = "postgres"
   engine_version = "12"
   instance_class = "db.t2.micro"
-  name = "mydb"
-  username = "idiot"
-  password = ""
+  name = var.db_name
+  username = var.db_user
+  password = var.db_pass
   skip_final_snapshot = true
 }
 resource "aws_dynamodb_table" "terraform_locks" {

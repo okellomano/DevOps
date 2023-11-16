@@ -1,0 +1,5 @@
+instance_name = "postbnd"
+bucket_prefix = "postbnd-web-app-data"
+domain = "postbnd.saqle.com"
+db_name = "postbnd-db"
+db_user = "idiot"
