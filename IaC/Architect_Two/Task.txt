@@ -1,0 +1,15 @@
+As The Lead Solutions Architect for the project, deploy the IaC using Terraform on AWS
+
+ToDo:
+    1. Create a VPC - It will accept the IP Range [CIDR block]
+    2. Create and attch an Internet Gateway to the VPC
+    3. Create Two Subnets within the VPC with Name Tags 'Public' and 'Private' - They need IP Ranges /24
+    4. Deploy a NAT Gateway on the Public Subnet - Allocate an Elastic IP to the NAT Gateway
+    5. Set MapPublicIpOnLaunch to true on Public Subnet
+    6. Set MapPublicIpOnLaunch to false on Private Subnet
+    7. Create Public and Private Routing Tables
+    8. Assign the Subnets to their corresponding Routing Table
+    9. Create a Route in the Public Route Table to send default traffic ( 0.0.0.0/0 ) to the Internet Gateway you created
+    10. Create a Route in the Private Route Table to send default traffic ( 0.0.0.0/0 ) to the NAT Gateway
+
+# Destroy the resources
