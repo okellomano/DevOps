@@ -1,11 +1,11 @@
 terraform {
-  #   backend "s3" {
-  #     bucket = "architect-two-tf-state"
-  #     key            = "postbnd/tf-infra/terraform.tfstate"
-  #     region         = "us-east-1"
-  #     dynamodb_table = "terraform-state-locking"
-  #     encrypt = true
-  #   }
+     backend "s3" {
+       bucket = "architect-two-tf-state"
+       key            = "postbnd/tf-infra/terraform.tfstate"
+       region         = "us-east-1"
+       dynamodb_table = "terraform-state-locking"
+       encrypt = true
+     }
 
   required_providers {
     aws = {
