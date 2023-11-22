@@ -64,10 +64,10 @@ resource "aws_internet_gateway" "gw" {
   vpc_id = aws_vpc.my_vpc.id
 }
 
-resource "aws_internet_gateway_attachment" "gwa" {
-  internet_gateway_id = aws_internet_gateway.gw.id
-  vpc_id              = aws_vpc.my_vpc.id
-}
+#resource "aws_internet_gateway_attachment" "gwa" {
+#  internet_gateway_id = aws_internet_gateway.gw.id
+#  vpc_id              = aws_vpc.my_vpc.id
+#}
 
 resource "aws_subnet" "public_subnet" {
   vpc_id                  = aws_vpc.my_vpc.id
@@ -107,7 +107,7 @@ resource "aws_nat_gateway" "natgw" {
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.my_vpc.id
 
-  route = {
+  route {
     cidr_block = "0.0.0.0/0"
 
     # Identifier of a VPC Internet Gateway
@@ -122,7 +122,7 @@ resource "aws_route_table" "public" {
 resource "aws_route_table" "private" {
   vpc_id = aws_vpc.my_vpc.id
 
-  route = {
+  route {
     cidr_block = "0.0.0.0/0"
 
     # Identifier of a VPC NAT gateway
